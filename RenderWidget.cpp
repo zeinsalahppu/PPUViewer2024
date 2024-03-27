@@ -4,79 +4,98 @@
 // This software can be used and/or modified for academich use as long as 
 // this commented part is listed
 //
-// Last modified by: Zein Salah, on 24.02.2021
+// Last modified by: Zein Salah, on 20.03.2024
 //
 
-#include "RenderWidget.h"
-#include <QPainter>
 
-RenderWidget::RenderWidget(QWidget* parent) : QWidget(parent)
+#include "RenderWidget.h"
+#include <glut.h>
+
+RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
 
 }
+
+
+RenderWidget::~RenderWidget()
+{
+
+}
+
 
 QSize RenderWidget::minimumSizeHint() const
 {
   return QSize(100, 100);
 }
 
+
 QSize RenderWidget::sizeHint() const
 {
   return QSize(600, 600);
 }
 
-void RenderWidget::paintEvent(QPaintEvent*)
+
+void RenderWidget::initializeGL()
 {
-  QPainter painter(this);
+  glClearColor(1.0, 1.0, 1.0, 0.0);
+  glMatrixMode(GL_PROJECTION);
+  gluOrtho2D(0.0, 600.0, 0.0, 600.0);
 
-  //    painter.setRenderHint(QPainter::Antialiasing, false);
-  QColor color(0, 0, 0);
-  painter.setPen(color);
+  //glOrtho(-2.0, 2.0, -2.0, 2.0, -100, 100);
+  //gluPerspective(25.0, 1.0, 1.0, 100.0);
 
-  painter.drawRect(QRect(0, 0, width() - 1, height() - 1));
-  for (int x = 100; x < 300; ++x)
-  {
-    painter.drawPoint(x, x);
-  }
-
-  myDrawLine(50, 70, 300, 370);
 }
 
 
-void RenderWidget::myDrawLine(float x1, float y1, float x2, float y2)
+void RenderWidget::paintGL()
 {
-  QPainter painter(this);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //    painter.setRenderHint(QPainter::Antialiasing, false);
-  QColor color(0, 0, 0);
-  painter.setPen(color);
+  //glPointSize(10.0);
+  //glBegin(GL_POINTS);
+  //  glColor3f(1, 0, 0);
+  //  glVertex2i(80, 15);
+  //  glColor3f(0, 0, 1);
+  //  glVertex2i(10, 145);
+  //glEnd();
 
-  float m = (y2 - y1) / (x2 - x1);
-  //  SetPixel(x1, y1, color);   // first point
-  painter.drawPoint(x1, y1);
+  //glColor3f(0.0, 0.9, 0.2);
+  //glBegin(GL_LINES);
+  //  glVertex2i(80, 15);
+  //  glVertex2i(10, 145);
+  //glEnd();
 
-  if (m < 1)
-  {
-    float y = y1;
-    for (int i = x1 + 1; i < x2; ++i)
-    {
-      y = y + m;
-      //      SetPixel(i, round(y), color);
-      painter.drawPoint(i, round(y));
-    }
-  }
-  else     // i.e., m > 1
-  {
-    float mm = 1 / m;
-    float x = x1;
-    for (int i = y1 + 1; i < y2; ++i)
-    {
-      x = x + mm;
-      //      SetPixel(round(x), i, color);
-      painter.drawPoint(round(x), i);
-    }
-  }
+//  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//  glLineWidth(3);
 
-  //  SetPixel(x2, y2, color);   // last point
-  painter.drawPoint(x2, y2);
+  //glBegin(GL_TRIANGLES);
+  //  glColor3f(0.0, 0.0, 1.0);   // green
+  //  glVertex2f(100, 200);
+  //  glVertex2f(200, 400);
+  //  glVertex2f(500, 300);
+  //glEnd();
+
+
+  glBegin(GL_TRIANGLES);
+    glColor3f(0.0, 0.0, 1.0);   // blue
+    glVertex2f(100, 200);
+    glColor3f(1.0, 0.0, 0.0);   // red
+    glVertex2f(200, 400);
+    glColor3f(0.0, 1.0, 0.0);   // green
+    glVertex2f(500, 300);
+  glEnd();
+
+
+    glFlush();
 }
+
+
+void RenderWidget::resizeGL(int width, int height)
+{
+  int side = qMin(width, height);
+  glViewport((width - side) / 2, (height - side) / 2, side, side);
+
+//  glViewport(0, 0, width, height);
+}
+
+

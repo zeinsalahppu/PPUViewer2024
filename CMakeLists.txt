@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.0.2)
 
-project(CGFrameWork)
+project(PPUViewer)
 
 INCLUDE_DIRECTORIES (
-#   D:/Develope/Libs/Glut/include
+   D:/Develope/Libs/Glut/include
+
 )
 
 find_package(Qt5Widgets)
@@ -17,23 +18,22 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-SET( CGFrameWork_SRCS
-   main.cpp
-   RenderWidget.cpp
-   RenderWidget.h
+SET( PPUViewer_SRCS
+   main.cpp   
    PPUViewer.cpp
    PPUViewer.h
+   RenderWidget.cpp
+   RenderWidget.h
 )
 
 LINK_LIBRARIES(
-#   D:/Develope/Libs/Glut/Lib/glut32.lib
-#   ${OPENGL_glu_LIBRARY}
-#   ${OPENGL_LIBRARY}
+   D:/Develope/Libs/Glut/Lib/glut32.lib
+   ${OPENGL_glu_LIBRARY}
+   ${OPENGL_LIBRARY}
 )
 
 
-add_executable(CGFrameWork ${CGFrameWork_SRCS})
-target_link_libraries (CGFrameWork Qt5::Widgets)
+add_executable(PPUViewer ${PPUViewer_SRCS})
 
-#qt5_use_modules(CGFrameWork Widgets OpenGL)
-#target_link_libraries(CGFrameWork ${QT_LIBRARIES} ${OPENGL_LIBRARIES})
+qt5_use_modules(PPUViewer Widgets OpenGL)
+target_link_libraries(PPUViewer ${QT_LIBRARIES} ${OPENGL_LIBRARIES})

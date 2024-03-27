@@ -4,28 +4,32 @@
 // This software can be used and/or modified for academich use as long as 
 // this commented part is listed
 //
-// Last modified by: Zein Salah, on 24.04.2020
+// Last modified by: Zein Salah, on 26.02.2019
 //
 
 
 #pragma once
 
-#include <QWidget>
+#include <QOpenGLWidget>
 
-class RenderWidget : public QWidget
+class RenderWidget : public QOpenGLWidget
 {
-    Q_OBJECT
+	Q_OBJECT
 
-  public:
-    RenderWidget(QWidget *parent = 0);
+public:
+#define M_PI   3.14159265358979323846
 
-    QSize minimumSizeHint() const override;
-    QSize sizeHint() const override;
 
-	void myDrawLine(float x1, float y1, float x2, float y2);
-  void drawTicks(float xc, float yc, float r);
+	RenderWidget(QWidget *parent = 0);
+	~RenderWidget();
 
-  protected:
-    void paintEvent(QPaintEvent *event) override;
+	QSize minimumSizeHint() const override;
+	QSize sizeHint() const override;
+
+protected:
+	void initializeGL() override;
+	void resizeGL(int w, int h) override;
+	void paintGL() override;
 
 };
+

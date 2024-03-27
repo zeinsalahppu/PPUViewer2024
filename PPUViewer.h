@@ -4,7 +4,7 @@
 // This software can be used and/or modified for academich use as long as 
 // this commented part is listed
 //
-// Last modified by: Zein Salah, on 24.04.2020
+// Last modified by: Zein Salah, on 26.02.2019
 //
 
 
@@ -22,7 +22,7 @@ public:
   PPUViewer();
 
 private:
-  RenderWidget *renderWidget;
+  RenderWidget *m_RenderWidget;
 
 };
 

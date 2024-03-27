@@ -4,22 +4,22 @@
 // This software can be used and/or modified for academich use as long as 
 // this commented part is listed
 //
-// Last modified by: Zein Salah, on 24.08.2020
+// Last modified by: Zein Salah, on 20.03.2014
 //
 
 
-#include "RenderWidget.h"
 #include "PPUViewer.h"
+#include "RenderWidget.h"
 
 #include <QtWidgets>
 
 PPUViewer::PPUViewer()
 {
-  renderWidget = new RenderWidget;
+  m_RenderWidget = new RenderWidget;
 
   QGridLayout* mainLayout = new QGridLayout;
-  mainLayout->addWidget(renderWidget, 0, 0, 1, 4);
+  mainLayout->addWidget(m_RenderWidget, 0, 0, 1, 4);
   setLayout(mainLayout);
 
-  setWindowTitle(tr("2D Graphics: Drawing Elementary Shapes"));
+  setWindowTitle(tr("PPUViewer"));
 }
