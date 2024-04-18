@@ -26,7 +26,7 @@ public:
 	QSize minimumSizeHint() const override;
 	QSize sizeHint() const override;
 
-	void drawHouse(float r, float g, float b);
+	void drawCube(void);
 
 protected:
 	void initializeGL() override;
