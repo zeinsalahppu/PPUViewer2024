@@ -14,24 +14,23 @@
 
 class RenderWidget : public QOpenGLWidget
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
 #define M_PI   3.14159265358979323846
 
 
-	RenderWidget(QWidget *parent = 0);
-	~RenderWidget();
+  RenderWidget(QWidget *parent = 0);
+  ~RenderWidget();
 
-	QSize minimumSizeHint() const override;
-	QSize sizeHint() const override;
+  QSize minimumSizeHint() const override;
+  QSize sizeHint() const override;
 
-	void drawCube(void);
+  void drawCube(void);
 
 protected:
-	void initializeGL() override;
-	void resizeGL(int w, int h) override;
-	void paintGL() override;
+  void initializeGL() override;
+  void resizeGL(int w, int h) override;
+  void paintGL() override;
 
 };
-
