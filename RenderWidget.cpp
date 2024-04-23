@@ -95,6 +95,22 @@ void RenderWidget::zoomOut()
 }
 
 
+void RenderWidget::rotateAboutY()
+{
+  double angle = 5.0 / 180 * M_PI;
+
+//  std::cout << "Rotating about Y by " << angle << "\n";
+
+  double newx = m_ViewPoint.x * cos(angle) + m_ViewPoint.z * sin(angle);
+  double newz = -m_ViewPoint.x * sin(angle) + m_ViewPoint.z * cos(angle);
+
+  m_ViewPoint.x = newx;
+  m_ViewPoint.z = newz;
+
+  update();
+}
+
+
 void RenderWidget::drawCube(void)
 {
   GLfloat cubeCorner[8][3];

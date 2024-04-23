@@ -32,4 +32,9 @@ PPUViewer::PPUViewer()
   m_ZoomOutButton->setObjectName(QStringLiteral("ZoomOutButton"));
   mainLayout->addWidget(m_ZoomOutButton);
   connect(m_ZoomOutButton, SIGNAL(pressed()), m_RenderWidget, SLOT(zoomOut()));
+
+  m_RotateButton = new QPushButton("Rotate");
+  m_RotateButton->setObjectName(QStringLiteral("RotateButton"));
+  mainLayout->addWidget(m_RotateButton);
+  connect(m_RotateButton, SIGNAL(pressed()), m_RenderWidget, SLOT(rotateAboutY()));
 }

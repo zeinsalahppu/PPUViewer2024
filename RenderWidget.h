@@ -29,6 +29,7 @@ class RenderWidget : public QOpenGLWidget
     protected slots:
     void zoomIn();
     void zoomOut();
+    void rotateAboutY();
 
   protected:
     void initializeGL() override;
