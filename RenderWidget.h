@@ -45,4 +45,6 @@ class RenderWidget : public QOpenGLWidget
 
     Point3D m_ViewPoint;
 
+    float m_FoV;
+
 };

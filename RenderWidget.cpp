@@ -42,8 +42,9 @@ void RenderWidget::initializeGL()
 {
   glClearColor(1.0, 1.0, 1.0, 0.0);
 
+  m_FoV = 15.0;
   glMatrixMode(GL_PROJECTION);
-  gluPerspective(15.0, 1.0, 1.0, 100.0);
+  gluPerspective(m_FoV, 1.0, 1.0, 100.0);
 }
 
 
@@ -52,11 +53,16 @@ void RenderWidget::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
 
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(m_FoV, 1.0, 1.0, 100.0);
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z,      /* view point */
     0.0, 0.0, 0.0,      /* ref point */
     0.0, 1.0, 0.0);     /* up direction is positive y-axis */
+
 
   drawCube();
 }
@@ -74,10 +80,12 @@ void RenderWidget::resizeGL(int width, int height)
 void RenderWidget::zoomIn()
 {
 //  std::cout << "Zooming In..\n";
-
+/*
   m_ViewPoint.x *= 0.95;
   m_ViewPoint.y *= 0.95;
-  m_ViewPoint.z *= 0.95;
+  m_ViewPoint.z *= 0.95;*/
+
+  m_FoV -= 1;
 
   update();
 }
@@ -87,9 +95,11 @@ void RenderWidget::zoomOut()
 {
 //  std::cout << "Zooming Out..\n";
 
-  m_ViewPoint.x /= 0.95;
+  /*m_ViewPoint.x /= 0.95;
   m_ViewPoint.y /= 0.95;
-  m_ViewPoint.z /= 0.95;
+  m_ViewPoint.z /= 0.95;*/
+
+  m_FoV += 1;
 
   update();
 }
