@@ -26,7 +26,7 @@ class RenderWidget : public QOpenGLWidget
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
-    protected slots:
+  protected slots:
     void zoomIn();
     void zoomOut();
     void rotateAboutY();
