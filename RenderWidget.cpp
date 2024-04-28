@@ -11,6 +11,11 @@
 #include "RenderWidget.h"
 #include <glut.h>
 #include <QPainter>
+#include <QMouseEvent>
+
+
+#include <iostream>
+
 
 RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
@@ -95,14 +100,21 @@ void RenderWidget::zoomOut()
 }
 
 
-void RenderWidget::rotateAboutY()
+void RenderWidget::rotateAboutX(double angle)
 {
-  double angle = 5.0 / 180 * M_PI;
+  // to be implemented
+  update();
+}
 
-//  std::cout << "Rotating about Y by " << angle << "\n";
 
-  double newx = m_ViewPoint.x * cos(angle) + m_ViewPoint.z * sin(angle);
-  double newz = -m_ViewPoint.x * sin(angle) + m_ViewPoint.z * cos(angle);
+void RenderWidget::rotateAboutY(double angle)
+{
+  angle = angle / 180 * M_PI;
+
+ // std::cout << "Rotating about Y by " << angle << "\n";
+
+  double newx = m_ViewPoint.x*cos(angle) + m_ViewPoint.z*sin(angle);
+  double newz = -m_ViewPoint.x*sin(angle) + m_ViewPoint.z*cos(angle);
 
   m_ViewPoint.x = newx;
   m_ViewPoint.z = newz;
@@ -167,3 +179,47 @@ void RenderWidget::drawCube(void)
 
   glFlush();
 }
+
+
+void RenderWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+  mouseButton = NoButton;
+  IS_LeftButton = IS_MiddleButton = IS_RightButton = false;
+}
+
+
+void RenderWidget::mousePressEvent(QMouseEvent *event)
+{
+  m_LastMouseX = event->x();
+  m_LastMouseY = event->y();
+    
+ // std::cout << "Mouse pressed buttom is: " << event->button() << std::endl;
+  mouseButton = (MouseButtonState)event->button();
+
+  if (event->button() == LeftButton)    IS_LeftButton = true;
+  if (event->button() == MiddleButton)  IS_MiddleButton = true;
+  if (event->button() == RightButton)   IS_RightButton = true;
+};
+
+
+void RenderWidget::mouseMoveEvent(QMouseEvent *event)
+{
+  int dx = event->x() - m_LastMouseX;
+  int dy = event->y() - m_LastMouseY;
+  double m_TranslateStep = 1;
+
+  if (IS_LeftButton && !IS_MiddleButton)
+  {
+    rotateAboutY(-(double)dx / 2);
+    rotateAboutX(-(double)dy / 2);
+  }
+
+  m_LastMouseX = event->x();
+  m_LastMouseY = event->y();
+};
+
+
+void RenderWidget::wheelEvent(QWheelEvent * event)
+{
+
+};
