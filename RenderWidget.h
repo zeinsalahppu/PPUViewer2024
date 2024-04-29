@@ -63,7 +63,6 @@ class RenderWidget : public QOpenGLWidget
     int m_LastMouseX;
     int m_LastMouseY;
 
-    MouseButtonState mouseButton;
     bool IS_LeftButton, IS_MiddleButton, IS_RightButton;
 
 };

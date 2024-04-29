@@ -183,7 +183,6 @@ void RenderWidget::drawCube(void)
 
 void RenderWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-  mouseButton = NoButton;
   IS_LeftButton = IS_MiddleButton = IS_RightButton = false;
 }
 
@@ -192,9 +191,8 @@ void RenderWidget::mousePressEvent(QMouseEvent *event)
 {
   m_LastMouseX = event->x();
   m_LastMouseY = event->y();
-    
+
  // std::cout << "Mouse pressed buttom is: " << event->button() << std::endl;
-  mouseButton = (MouseButtonState)event->button();
 
   if (event->button() == LeftButton)    IS_LeftButton = true;
   if (event->button() == MiddleButton)  IS_MiddleButton = true;
@@ -206,7 +204,6 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *event)
 {
   int dx = event->x() - m_LastMouseX;
   int dy = event->y() - m_LastMouseY;
-  double m_TranslateStep = 1;
 
   if (IS_LeftButton && !IS_MiddleButton)
   {
