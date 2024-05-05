@@ -19,9 +19,11 @@
 
 RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
-  m_ViewPoint.x = 5.0;
-  m_ViewPoint.y = 5.0;
-  m_ViewPoint.z = 5.0;
+  m_ViewPoint.x = 100.0;
+  m_ViewPoint.y = 100.0;
+  m_ViewPoint.z = 100.0;
+
+  m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
 
 
@@ -48,7 +50,7 @@ void RenderWidget::initializeGL()
   glClearColor(1.0, 1.0, 1.0, 0.0);
 
   glMatrixMode(GL_PROJECTION);
-  gluPerspective(15.0, 1.0, 1.0, 100.0);
+  gluPerspective(25.0, 1.0, 0.1, 5000.0);
 }
 
 
@@ -63,7 +65,8 @@ void RenderWidget::paintGL()
     0.0, 0.0, 0.0,      /* ref point */
     0.0, 1.0, 0.0);     /* up direction is positive y-axis */
 
-  drawCube();
+  //drawCube();
+  renderMesh(&m_Mesh);
 }
 
 
@@ -175,6 +178,41 @@ void RenderWidget::drawCube(void)
   glVertex3fv(cubeCorner[6]);
   glVertex3fv(cubeCorner[5]);
   glVertex3fv(cubeCorner[1]);
+  glEnd();
+
+  glFlush();
+}
+
+
+void RenderWidget::renderMesh(MeshModel* mshModel)
+{
+  glEnable(GL_DEPTH_TEST);
+
+  glShadeModel(GL_FLAT);
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  long numTrg = mshModel->GetNumTriangles();
+  long v0, v1, v2;
+
+  glBegin(GL_TRIANGLES);
+  for (long i = 0; i < numTrg; ++i)
+  {
+    v0 = mshModel->GetTriangle(i, 0);
+    v1 = mshModel->GetTriangle(i, 1);
+    v2 = mshModel->GetTriangle(i, 2);
+
+    glColor3f(1.0, 0.5, 0.5);
+    glNormal3f(mshModel->GetNormal(v0).x(), mshModel->GetNormal(v0).y(), mshModel->GetNormal(v0).z());
+    glVertex3f(mshModel->GetVertex(v0).x(), mshModel->GetVertex(v0).y(), mshModel->GetVertex(v0).z());
+
+
+    glNormal3f(mshModel->GetNormal(v1).x(), mshModel->GetNormal(v1).y(), mshModel->GetNormal(v1).z());
+    glVertex3f(mshModel->GetVertex(v1).x(), mshModel->GetVertex(v1).y(), mshModel->GetVertex(v1).z());
+
+    glNormal3f(mshModel->GetNormal(v2).x(), mshModel->GetNormal(v2).y(), mshModel->GetNormal(v2).z());
+    glVertex3f(mshModel->GetVertex(v2).x(), mshModel->GetVertex(v2).y(), mshModel->GetVertex(v2).z());
+  }
   glEnd();
 
   glFlush();

@@ -11,6 +11,7 @@
 #pragma once
 
 #include <QOpenGLWidget>
+#include "IO/MeshModel.h"
 
 class RenderWidget : public QOpenGLWidget
 {
@@ -43,6 +44,7 @@ class RenderWidget : public QOpenGLWidget
     void wheelEvent(QWheelEvent * event);
 
     void drawCube(void);
+    void renderMesh(MeshModel* mshModel);
 
     typedef struct
     {
@@ -50,6 +52,7 @@ class RenderWidget : public QOpenGLWidget
     } Point3D;
 
     Point3D m_ViewPoint;
+    MeshModel m_Mesh;
 
     enum MouseButtonState 
     {

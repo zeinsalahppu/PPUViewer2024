@@ -24,14 +24,21 @@ SET( PPUViewer_SRCS
    PPUViewer.h
    RenderWidget.cpp
    RenderWidget.h
+   IO/MeshModel.cpp
+   IO/MeshModel.h
+   IO/l3ds.cpp
+   IO/l3ds.h
 )
 
 LINK_LIBRARIES(
    D:/Develope/Libs/Glut/Lib/glut32.lib
+   debug      baselib/debug/baselib.lib
+   optimized  baselib/release/baselib
    ${OPENGL_glu_LIBRARY}
    ${OPENGL_LIBRARY}
 )
 
+SUBDIRS (baselib)
 
 add_executable(PPUViewer ${PPUViewer_SRCS})
 
