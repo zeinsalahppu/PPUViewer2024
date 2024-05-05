@@ -188,6 +188,42 @@ void RenderWidget::renderMesh(MeshModel* mshModel)
 {
   glEnable(GL_DEPTH_TEST);
 
+  GLfloat light_position[] = { 100.0, 100.0, 100.0, 0.0 };
+  GLfloat light_ambient[] = { 0.15, 0.15, 0.15, 1.0 };
+  GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
+  //// messing
+  //GLfloat mat_ambient[] = { 0.33, 0.22, 0.03, 1.0 };
+  //GLfloat mat_diffuse[] = { 0.78, 0.57, 0.11, 1.0 };
+  //GLfloat mat_specular[] = { 0.99, 0.94, 0.81, 1.0 };
+  //GLfloat mat_shininess[] = { 28.0 };
+
+  //// gold
+  //GLfloat mat_ambient[] = { 0.24725f, 0.1995f, 0.0745f, 1.0f };
+  //GLfloat mat_diffuse[] = { 0.75164f, 0.60648f, 0.22648f, 1.0f };
+  //GLfloat mat_specular[] = { 0.628281f, 0.555802f, 0.366065f, 1.0f };
+  //GLfloat mat_shininess[] = { 51.2 };
+
+  // brass
+  GLfloat mat_ambient[] = { 0.329412f, 0.223529f, 0.027451f, 1.0f };
+  GLfloat mat_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
+  GLfloat mat_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
+  GLfloat mat_shininess[] = { 27.8974f };
+
+  glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+
   glShadeModel(GL_FLAT);
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -202,7 +238,7 @@ void RenderWidget::renderMesh(MeshModel* mshModel)
     v1 = mshModel->GetTriangle(i, 1);
     v2 = mshModel->GetTriangle(i, 2);
 
-    glColor3f(1.0, 0.5, 0.5);
+    glColor3f(1.0, 0.0, 0.0);
     glNormal3f(mshModel->GetNormal(v0).x(), mshModel->GetNormal(v0).y(), mshModel->GetNormal(v0).z());
     glVertex3f(mshModel->GetVertex(v0).x(), mshModel->GetVertex(v0).y(), mshModel->GetVertex(v0).z());
 
@@ -214,6 +250,11 @@ void RenderWidget::renderMesh(MeshModel* mshModel)
     glVertex3f(mshModel->GetVertex(v2).x(), mshModel->GetVertex(v2).y(), mshModel->GetVertex(v2).z());
   }
   glEnd();
+
+  glDisable(GL_BLEND);
+  glDisable(GL_LIGHTING);
+  glDisable(GL_LIGHT0);
+
 
   glFlush();
 }
