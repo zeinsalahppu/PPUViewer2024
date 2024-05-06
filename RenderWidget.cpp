@@ -66,8 +66,8 @@ void RenderWidget::paintGL()
     0.0, 1.0, 0.0);     /* up direction is positive y-axis */
 
   //drawCube();
-  drawCubeWithLighting();
-  //renderMesh(&m_Mesh);
+  //drawCubeWithLighting();
+  renderMesh(&m_Mesh);
 }
 
 
@@ -256,17 +256,6 @@ void RenderWidget::drawCubeWithLighting(void)
     glVertex3fv(cubeCorner[2]);
 
 
-    // gold
-    GLfloat mat_ambient2[] = { 0.19f, 0.19f, 0.19f, 1.0f };
-    GLfloat mat_diffuse2[] = { 0.51f, 0.51, 0.51f, 1.0f };
-    GLfloat mat_specular2[] = { 0.51f, 0.51, 0.51f, 1.0f };
-    GLfloat mat_shininess2[] = { 71.2 };
-
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient2);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse2);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular2);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess2);    
 
     glNormal3fv(cubeCorner[4]);
     glVertex3fv(cubeCorner[4]);
