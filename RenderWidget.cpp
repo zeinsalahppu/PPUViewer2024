@@ -19,9 +19,9 @@
 
 RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
-  m_ViewPoint.x = 100.0;
-  m_ViewPoint.y = 100.0;
-  m_ViewPoint.z = 100.0;
+  m_ViewPoint.x = 5.0;
+  m_ViewPoint.y = 5.0;
+  m_ViewPoint.z = 5.0;
 
   m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
@@ -66,7 +66,8 @@ void RenderWidget::paintGL()
     0.0, 1.0, 0.0);     /* up direction is positive y-axis */
 
   //drawCube();
-  renderMesh(&m_Mesh);
+  drawCubeWithLighting();
+  //renderMesh(&m_Mesh);
 }
 
 
@@ -142,42 +143,159 @@ void RenderWidget::drawCube(void)
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glLineWidth(3);
   glBegin(GL_QUADS);
+    glColor3f(0.0, 0.0, 0.0);   // blue
+    glVertex3fv(cubeCorner[3]);
+    glVertex3fv(cubeCorner[2]);
+    glVertex3fv(cubeCorner[1]);
+    glVertex3fv(cubeCorner[0]);
 
-  glColor3f(0.0, 0.0, 0.0);   // blue
-  glVertex3fv(cubeCorner[3]);
-  glVertex3fv(cubeCorner[2]);
-  glVertex3fv(cubeCorner[1]);
-  glVertex3fv(cubeCorner[0]);
+    glColor3f(1.0, 1.0, 0.0);  // yellow
+    glVertex3fv(cubeCorner[1]);
+    glVertex3fv(cubeCorner[5]);
+    glVertex3fv(cubeCorner[4]);
+    glVertex3fv(cubeCorner[0]);
 
-  glColor3f(1.0, 1.0, 0.0);  // yellow
-  glVertex3fv(cubeCorner[1]);
-  glVertex3fv(cubeCorner[5]);
-  glVertex3fv(cubeCorner[4]);
-  glVertex3fv(cubeCorner[0]);
+    glColor3f(0.0, 1.0, 1.0);
+    glVertex3fv(cubeCorner[3]);
+    glVertex3fv(cubeCorner[7]);
+    glVertex3fv(cubeCorner[6]);
+    glVertex3fv(cubeCorner[2]);
 
-  glColor3f(0.0, 1.0, 1.0);
-  glVertex3fv(cubeCorner[3]);
-  glVertex3fv(cubeCorner[7]);
-  glVertex3fv(cubeCorner[6]);
-  glVertex3fv(cubeCorner[2]);
+    glColor3f(1.0, 0.0, 0.0);   // red
+    glVertex3fv(cubeCorner[4]);
+    glVertex3fv(cubeCorner[5]);
+    glVertex3fv(cubeCorner[6]);
+    glVertex3fv(cubeCorner[7]);
 
-  glColor3f(1.0, 0.0, 0.0);   // red
-  glVertex3fv(cubeCorner[4]);
-  glVertex3fv(cubeCorner[5]);
-  glVertex3fv(cubeCorner[6]);
-  glVertex3fv(cubeCorner[7]);
+    glColor3f(1.0, 0.0, 1.0);
+    glVertex3fv(cubeCorner[4]);
+    glVertex3fv(cubeCorner[7]);
+    glVertex3fv(cubeCorner[3]);
+    glVertex3fv(cubeCorner[0]);
 
-  glColor3f(1.0, 0.0, 1.0);
-  glVertex3fv(cubeCorner[4]);
-  glVertex3fv(cubeCorner[7]);
-  glVertex3fv(cubeCorner[3]);
-  glVertex3fv(cubeCorner[0]);
+    glColor3f(0.0, 1.0, 0.0);   // green
+    glVertex3fv(cubeCorner[2]);
+    glVertex3fv(cubeCorner[6]);
+    glVertex3fv(cubeCorner[5]);
+    glVertex3fv(cubeCorner[1]);
+  glEnd();
 
-  glColor3f(0.0, 1.0, 0.0);   // green
-  glVertex3fv(cubeCorner[2]);
-  glVertex3fv(cubeCorner[6]);
-  glVertex3fv(cubeCorner[5]);
-  glVertex3fv(cubeCorner[1]);
+  glFlush();
+}
+
+
+void RenderWidget::drawCubeWithLighting(void)
+{
+  GLfloat cubeCorner[8][3];
+
+  cubeCorner[0][0] = -0.5;  cubeCorner[0][1] = -0.5;  cubeCorner[0][2] = -0.5;
+  cubeCorner[1][0] = 0.5;   cubeCorner[1][1] = -0.5;  cubeCorner[1][2] = -0.5;
+  cubeCorner[2][0] = 0.5;   cubeCorner[2][1] = 0.5;   cubeCorner[2][2] = -0.5;
+  cubeCorner[3][0] = -0.5;  cubeCorner[3][1] = 0.5;   cubeCorner[3][2] = -0.5;
+  cubeCorner[4][0] = -0.5;  cubeCorner[4][1] = -0.5;  cubeCorner[4][2] = 0.5;
+  cubeCorner[5][0] = 0.5;   cubeCorner[5][1] = -0.5;  cubeCorner[5][2] = 0.5;
+  cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
+  cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
+
+  GLfloat light_position[] = { 100.0, 100.0, 100.0, 0.0 };
+  GLfloat light_ambient[] = { 0.15, 0.15, 0.15, 1.0 };
+  GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glLineWidth(3);
+
+  glBegin(GL_QUADS);
+  // brass
+    GLfloat mat_ambient[] = { 0.329412f, 0.223529f, 0.027451f, 1.0f };
+    GLfloat mat_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
+    GLfloat mat_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
+    GLfloat mat_shininess[] = { 27.8974f };
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    glNormal3fv(cubeCorner[3]);
+    glVertex3fv(cubeCorner[3]);
+    glNormal3fv(cubeCorner[2]);
+    glVertex3fv(cubeCorner[2]);
+    glNormal3fv(cubeCorner[1]);
+    glVertex3fv(cubeCorner[1]);
+    glNormal3fv(cubeCorner[0]);
+    glVertex3fv(cubeCorner[0]);
+
+    
+    glNormal3fv(cubeCorner[1]);
+    glVertex3fv(cubeCorner[1]);
+    glNormal3fv(cubeCorner[5]);
+    glVertex3fv(cubeCorner[5]);
+    glNormal3fv(cubeCorner[4]);
+    glVertex3fv(cubeCorner[4]);
+    glNormal3fv(cubeCorner[0]);
+    glVertex3fv(cubeCorner[0]);
+
+
+
+    glNormal3fv(cubeCorner[3]);
+    glVertex3fv(cubeCorner[3]);
+    glNormal3fv(cubeCorner[7]);
+    glVertex3fv(cubeCorner[7]);
+    glNormal3fv(cubeCorner[6]);
+    glVertex3fv(cubeCorner[6]);
+    glNormal3fv(cubeCorner[2]);
+    glVertex3fv(cubeCorner[2]);
+
+
+    // gold
+    GLfloat mat_ambient2[] = { 0.19f, 0.19f, 0.19f, 1.0f };
+    GLfloat mat_diffuse2[] = { 0.51f, 0.51, 0.51f, 1.0f };
+    GLfloat mat_specular2[] = { 0.51f, 0.51, 0.51f, 1.0f };
+    GLfloat mat_shininess2[] = { 71.2 };
+
+
+    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient2);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse2);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular2);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess2);    
+
+    glNormal3fv(cubeCorner[4]);
+    glVertex3fv(cubeCorner[4]);
+    glNormal3fv(cubeCorner[5]);
+    glVertex3fv(cubeCorner[5]);
+    glNormal3fv(cubeCorner[6]);
+    glVertex3fv(cubeCorner[6]);
+    glNormal3fv(cubeCorner[7]);
+    glVertex3fv(cubeCorner[7]);
+
+
+    glNormal3fv(cubeCorner[4]);
+    glVertex3fv(cubeCorner[4]);
+    glNormal3fv(cubeCorner[7]);
+    glVertex3fv(cubeCorner[7]);
+    glNormal3fv(cubeCorner[3]);
+    glVertex3fv(cubeCorner[3]);
+    glNormal3fv(cubeCorner[0]);
+    glVertex3fv(cubeCorner[0]);
+
+
+    glNormal3fv(cubeCorner[2]);
+    glVertex3fv(cubeCorner[2]);
+    glNormal3fv(cubeCorner[6]);
+    glVertex3fv(cubeCorner[6]);
+    glNormal3fv(cubeCorner[5]);
+    glVertex3fv(cubeCorner[5]);
+    glNormal3fv(cubeCorner[1]);
+    glVertex3fv(cubeCorner[1]);
   glEnd();
 
   glFlush();
