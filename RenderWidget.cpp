@@ -66,8 +66,8 @@ void RenderWidget::paintGL()
     0.0, 1.0, 0.0);     /* up direction is positive y-axis */
 
   //drawCube();
-  //drawCubeWithLighting();
-  renderMesh(&m_Mesh);
+  drawCubeWithLighting();
+  //renderMesh(&m_Mesh);
 }
 
 
@@ -142,8 +142,9 @@ void RenderWidget::drawCube(void)
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glLineWidth(3);
+
   glBegin(GL_QUADS);
-    glColor3f(0.0, 0.0, 0.0);   // blue
+    glColor3f(0.0, 0.0, 1.0);   // blue
     glVertex3fv(cubeCorner[3]);
     glVertex3fv(cubeCorner[2]);
     glVertex3fv(cubeCorner[1]);
@@ -212,6 +213,26 @@ void RenderWidget::drawCubeWithLighting(void)
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glLineWidth(3);
+
+  //int cubeface[6][4] = { { 3, 2, 1, 0 }, { 1, 5, 4, 0 }, { 3, 7, 6, 2 }, { 4, 5, 6, 7 }, { 4, 7, 3, 0 }, { 2, 6, 5, 1 } };
+
+  //glBegin(GL_QUADS);
+  //  glColor3f(0.0, 0.0, 1.0);   // blue
+
+  //  for (int face = 0; face < 6; ++face)
+  //  {
+  //    for (int i = 0; i < 4; ++i)
+  //    {
+  //      Vector3D normal;
+  //      normal[0] = cubeCorner[cubeface[face][i]][0];
+  //      normal[1] = cubeCorner[cubeface[face][i]][1];
+  //      normal[2] = cubeCorner[cubeface[face][i]][2];
+  //     // normal.normalize();
+  //      glNormal3f(normal[0], normal[1], normal[2]);
+  //      glVertex3fv(cubeCorner[cubeface[face][i]]);
+  //    }
+  //  }
+  //glEnd();
 
   glBegin(GL_QUADS);
   // brass
