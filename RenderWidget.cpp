@@ -12,6 +12,7 @@
 #include <glut.h>
 #include <QPainter>
 #include <QMouseEvent>
+#include "baselib/Matrix4D.h"
 
 
 #include <iostream>
@@ -19,9 +20,11 @@
 
 RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
-  m_ViewPoint.x = 5.0;
-  m_ViewPoint.y = 5.0;
-  m_ViewPoint.z = 5.0;
+  m_ViewPoint.x = 150.0;
+  m_ViewPoint.y = 150.0;
+  m_ViewPoint.z = 150.0;
+
+  m_UpDirection = gris::Vector3D(0, 1, 0);
 
   m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
@@ -63,11 +66,11 @@ void RenderWidget::paintGL()
   glLoadIdentity();
   gluLookAt(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z,      /* view point */
     0.0, 0.0, 0.0,      /* ref point */
-    0.0, 1.0, 0.0);     /* up direction is positive y-axis */
+    m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
 
   //drawCube();
-  drawCubeWithLighting();
-  //renderMesh(&m_Mesh);
+  //drawCubeWithLighting();
+  renderMesh(&m_Mesh);
 }
 
 
@@ -106,7 +109,27 @@ void RenderWidget::zoomOut()
 
 void RenderWidget::rotateAboutX(double angle)
 {
-  // to be implemented
+  angle = angle / 180 * M_PI;
+
+  std::cout << "Rotating about X by " << angle << "\n";
+
+  Vector3D viewDir = gris::Point3D(0, 0, 0) - gris::Point3D(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z);
+  Vector3D rightDir = viewDir ^ m_UpDirection;
+  rightDir.normalize();
+
+  Matrix4D rot_Matrix = Matrix4D::Rotate(rightDir, angle);
+
+  gris::Point3D vp = gris::Point3D(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z);
+
+  vp = rot_Matrix * vp;
+
+  m_ViewPoint.x = vp.x();
+  m_ViewPoint.y = vp.y();
+  m_ViewPoint.z = vp.z();
+
+  m_UpDirection = rot_Matrix * m_UpDirection;
+  m_UpDirection.normalize();
+
   update();
 }
 
@@ -115,13 +138,17 @@ void RenderWidget::rotateAboutY(double angle)
 {
   angle = angle / 180 * M_PI;
 
- // std::cout << "Rotating about Y by " << angle << "\n";
+  std::cout << "Rotating about Y by " << angle << "\n";
 
-  double newx = m_ViewPoint.x*cos(angle) + m_ViewPoint.z*sin(angle);
-  double newz = -m_ViewPoint.x*sin(angle) + m_ViewPoint.z*cos(angle);
+  Matrix4D rot_Matrix = Matrix4D::Rotate(m_UpDirection, angle);
 
-  m_ViewPoint.x = newx;
-  m_ViewPoint.z = newz;
+  gris::Point3D vp = gris::Point3D(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z);
+
+  vp = rot_Matrix * vp;
+
+  m_ViewPoint.x = vp.x();
+  m_ViewPoint.y = vp.y();
+  m_ViewPoint.z = vp.z();
 
   update();
 }
@@ -371,8 +398,7 @@ void RenderWidget::mousePressEvent(QMouseEvent *event)
 {
   m_LastMouseX = event->x();
   m_LastMouseY = event->y();
-
- // std::cout << "Mouse pressed buttom is: " << event->button() << std::endl;
+  //   std::cout << "Mouse pressed buttom is: " << event->button() << std::endl;
 
   if (event->button() == LeftButton)    IS_LeftButton = true;
   if (event->button() == MiddleButton)  IS_MiddleButton = true;
@@ -384,11 +410,12 @@ void RenderWidget::mouseMoveEvent(QMouseEvent *event)
 {
   int dx = event->x() - m_LastMouseX;
   int dy = event->y() - m_LastMouseY;
+  double m_TranslateStep = 1;
 
   if (IS_LeftButton && !IS_MiddleButton)
   {
-    rotateAboutY(-(double)dx / 2);
-    rotateAboutX(-(double)dy / 2);
+    rotateAboutY((double)dx / 2);
+    rotateAboutX((double)dy / 2);
   }
 
   m_LastMouseX = event->x();

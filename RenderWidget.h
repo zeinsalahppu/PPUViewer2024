@@ -52,7 +52,9 @@ class RenderWidget : public QOpenGLWidget
       double x, y, z;
     } Point3D;
 
+
     Point3D m_ViewPoint;
+    Vector3D m_UpDirection;
     MeshModel m_Mesh;
 
     enum MouseButtonState 
