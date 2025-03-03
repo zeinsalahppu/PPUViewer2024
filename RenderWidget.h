@@ -45,6 +45,7 @@ class RenderWidget : public QOpenGLWidget
 
     void drawCube(void);
     void drawCubeWithLighting(void);
+    void drawRGBCube(void);
     void renderMesh(MeshModel* mshModel);
 
     typedef struct
