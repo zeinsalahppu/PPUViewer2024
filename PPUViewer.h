@@ -12,6 +12,7 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include <QCheckBox>
 
 class RenderWidget;
 
@@ -27,6 +28,7 @@ class PPUViewer : public QWidget
     QPushButton* m_ZoomInButton;
     QPushButton* m_ZoomOutButton;
     QPushButton* m_RotateButton;
+    QCheckBox* m_OrthoCB;
 
 
 };

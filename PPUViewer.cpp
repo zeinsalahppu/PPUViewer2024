@@ -37,4 +37,9 @@ PPUViewer::PPUViewer()
   m_RotateButton->setObjectName(QStringLiteral("RotateButton"));
   mainLayout->addWidget(m_RotateButton);
   connect(m_RotateButton, SIGNAL(pressed()), m_RenderWidget, SLOT(rotateAboutY()));
+
+  m_OrthoCB = new QCheckBox("Ortho Projection", this);
+  mainLayout->addWidget(m_OrthoCB);
+  m_OrthoCB->setCheckState(Qt::Unchecked);
+  connect(m_OrthoCB, SIGNAL(stateChanged(int)), m_RenderWidget, SLOT(changeProjection(int)));
 }

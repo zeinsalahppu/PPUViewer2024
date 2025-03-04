@@ -26,6 +26,8 @@ RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 
   m_UpDirection = gris::Vector3D(0, 1, 0);
 
+  m_ProjectionType = Perspective;
+
   //m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
 
@@ -53,7 +55,7 @@ void RenderWidget::initializeGL()
   glClearColor(1.0, 1.0, 1.0, 0.0);
 
   glMatrixMode(GL_PROJECTION);
-  gluPerspective(25.0, 1.0, 0.1, 5000.0);
+//  gluPerspective(25.0, 1.0, 0.1, 5000.0);
 }
 
 
@@ -64,7 +66,12 @@ void RenderWidget::paintGL()
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-//  glOrtho(-1.5, 1.5, -1.5, 1.5, -2.0, 10000.0);
+
+  if (m_ProjectionType == Perspective)
+    gluPerspective(25.0, 1.0, 0.1, 5000.0);
+  else
+    glOrtho(-1.3, 1.3, -1.3, 1.3, -2.0, 10000.0);
+
   gluLookAt(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z,      /* view point */
     0.0, 0.0, 0.0,      /* ref point */
     m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
@@ -151,6 +158,18 @@ void RenderWidget::rotateAboutY(double angle)
   m_ViewPoint.x = vp.x();
   m_ViewPoint.y = vp.y();
   m_ViewPoint.z = vp.z();
+
+  update();
+}
+
+
+void RenderWidget::changeProjection(int prjtype)
+{
+
+  if (prjtype == 2)
+    m_ProjectionType = Ortho;
+  else
+    m_ProjectionType = Perspective;
 
   update();
 }

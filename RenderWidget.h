@@ -32,6 +32,7 @@ class RenderWidget : public QOpenGLWidget
     void zoomOut();
     void rotateAboutX(double angle);
     void rotateAboutY(double angle);
+    void changeProjection(int prjtype);
 
   protected:
     void initializeGL() override;
@@ -71,5 +72,13 @@ class RenderWidget : public QOpenGLWidget
     int m_LastMouseY;
 
     bool IS_LeftButton, IS_MiddleButton, IS_RightButton;
+
+    enum Projections {
+      Perspective,
+      Ortho
+    };
+
+    Projections m_ProjectionType;
+
 
 };
