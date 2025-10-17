@@ -69,8 +69,8 @@ void RenderWidget::paintGL()
     m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
 
   //drawCube();
-  //drawCubeWithLighting();
-  renderMesh(&m_Mesh);
+  drawCubeWithLighting();
+  //renderMesh(&m_Mesh);
 }
 
 
