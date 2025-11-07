@@ -20,13 +20,17 @@
 
 RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
-  m_ViewPoint.x = 150.0;
-  m_ViewPoint.y = 150.0;
-  m_ViewPoint.z = 150.0;
+  m_ViewPoint.x = 5.0;
+  m_ViewPoint.y = 5.0;
+  m_ViewPoint.z = 5.0;
 
   m_UpDirection = gris::Vector3D(0, 1, 0);
 
   m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
+  m_ProjectionType = Perspective;
+  m_RendeingMode = WireFrame;
+
+  //m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
 
 
@@ -51,9 +55,6 @@ QSize RenderWidget::sizeHint() const
 void RenderWidget::initializeGL()
 {
   glClearColor(1.0, 1.0, 1.0, 0.0);
-
-  glMatrixMode(GL_PROJECTION);
-  gluPerspective(25.0, 1.0, 0.1, 5000.0);
 }
 
 
@@ -64,12 +65,24 @@ void RenderWidget::paintGL()
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+
+  if (m_ProjectionType == Perspective)
+    gluPerspective(25.0, 1.0, 0.1, 5000.0);
+  else
+    glOrtho(-1.3, 1.3, -1.3, 1.3, -2.0, 10000.0);
+
   gluLookAt(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z,      /* view point */
     0.0, 0.0, 0.0,      /* ref point */
     m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
 
-  //drawCube();
-  drawCubeWithLighting();
+  if (m_RendeingMode == WireFrame)
+    drawCube(GL_LINE);
+  if (m_RendeingMode == Filling)
+    drawCube(GL_FILL);
+  else if (m_RendeingMode == Lighting)
+    drawCubeWithLighting();
+
+  //drawRGBCube();
   //renderMesh(&m_Mesh);
 }
 
@@ -111,7 +124,7 @@ void RenderWidget::rotateAboutX(double angle)
 {
   angle = angle / 180 * M_PI;
 
-  std::cout << "Rotating about X by " << angle << "\n";
+//  std::cout << "Rotating about X by " << angle << "\n";
 
   Vector3D viewDir = gris::Point3D(0, 0, 0) - gris::Point3D(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z);
   Vector3D rightDir = viewDir ^ m_UpDirection;
@@ -138,7 +151,7 @@ void RenderWidget::rotateAboutY(double angle)
 {
   angle = angle / 180 * M_PI;
 
-  std::cout << "Rotating about Y by " << angle << "\n";
+//  std::cout << "Rotating about Y by " << angle << "\n";
 
   Matrix4D rot_Matrix = Matrix4D::Rotate(m_UpDirection, angle);
 
@@ -154,7 +167,35 @@ void RenderWidget::rotateAboutY(double angle)
 }
 
 
-void RenderWidget::drawCube(void)
+void RenderWidget::changeProjection(int prjtype)
+{
+  std::cout << "Projection mode changes to " << prjtype << "\n";
+
+  if (prjtype == 1)
+    m_ProjectionType = Ortho;
+  else
+    m_ProjectionType = Perspective;
+
+  update();
+}
+
+
+void RenderWidget::changeRenderingMode(int rMode)
+{
+  std::cout << "Rendering Mode changed to " << rMode << "\n";
+
+  if (rMode == 0)
+    m_RendeingMode = WireFrame;
+  else if (rMode == 1)
+    m_RendeingMode = Filling;
+  else 
+    m_RendeingMode = Lighting;
+
+  update();
+}
+
+
+void RenderWidget::drawCube(int rMode)
 {
   GLfloat cubeCorner[8][3];
 
@@ -167,11 +208,11 @@ void RenderWidget::drawCube(void)
   cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
   cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glPolygonMode(GL_FRONT_AND_BACK, rMode);
   glLineWidth(3);
   glBegin(GL_QUADS);
 
-  glColor3f(0.0, 0.0, 0.0);   // blue
+  glColor3f(0.0, 0.0, 1.0);   // blue
   glVertex3fv(cubeCorner[3]);
   glVertex3fv(cubeCorner[2]);
   glVertex3fv(cubeCorner[1]);
@@ -183,7 +224,7 @@ void RenderWidget::drawCube(void)
   glVertex3fv(cubeCorner[4]);
   glVertex3fv(cubeCorner[0]);
 
-  glColor3f(0.0, 1.0, 1.0);
+  glColor3f(0.0, 1.0, 1.0);  // cyan
   glVertex3fv(cubeCorner[3]);
   glVertex3fv(cubeCorner[7]);
   glVertex3fv(cubeCorner[6]);
@@ -195,7 +236,7 @@ void RenderWidget::drawCube(void)
   glVertex3fv(cubeCorner[6]);
   glVertex3fv(cubeCorner[7]);
 
-  glColor3f(1.0, 0.0, 1.0);
+  glColor3f(1.0, 0.0, 1.0);   //magenta
   glVertex3fv(cubeCorner[4]);
   glVertex3fv(cubeCorner[7]);
   glVertex3fv(cubeCorner[3]);
@@ -226,8 +267,10 @@ void RenderWidget::drawCubeWithLighting(void)
   cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
   cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
 
-  GLfloat light_position[] = { 100.0, 100.0, 100.0, 0.0 };
-  GLfloat light_ambient[] = { 0.15, 0.15, 0.15, 1.0 };
+ // GLfloat light_position[] = { m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z, 1.0 };
+  
+  GLfloat light_position[] = { 2.0, 2.0, 2.0, 1.0 };
+  GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
 
@@ -239,78 +282,172 @@ void RenderWidget::drawCubeWithLighting(void)
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glLineWidth(3);
+  glPolygonMode(GL_FRONT, GL_FILL);
+  glShadeModel(GL_SMOOTH);
+//  glLineWidth(3);
+
+    // brass
+  //GLfloat mat_ambient[] = { 0.329412f, 0.223529f, 0.027451f, 1.0f };
+  //GLfloat mat_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
+  //GLfloat mat_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
+  //GLfloat mat_shininess[] = { 27.8974f };
+
+  //glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+  //glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+  //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  //glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+  glEnable(GL_COLOR_MATERIAL);
+  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
   glBegin(GL_QUADS);
-    // brass
-    GLfloat mat_ambient[] = { 0.329412f, 0.223529f, 0.027451f, 1.0f };
-    GLfloat mat_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
-    GLfloat mat_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
-    GLfloat mat_shininess[] = { 27.8974f };
-
-    glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
-    glNormal3fv(cubeCorner[3]);
+    glNormal3f(0, 0, -1);
+    glColor3f(0.0, 0.0, 1.0);   // blue
     glVertex3fv(cubeCorner[3]);
-    glNormal3fv(cubeCorner[2]);
     glVertex3fv(cubeCorner[2]);
-    glNormal3fv(cubeCorner[1]);
     glVertex3fv(cubeCorner[1]);
-    glNormal3fv(cubeCorner[0]);
     glVertex3fv(cubeCorner[0]);
 
-    glNormal3fv(cubeCorner[1]);
+    glNormal3f(0, -1, 0);
+    glColor3f(1.0, 1.0, 0.0);   // yellow
     glVertex3fv(cubeCorner[1]);
-    glNormal3fv(cubeCorner[5]);
     glVertex3fv(cubeCorner[5]);
-    glNormal3fv(cubeCorner[4]);
     glVertex3fv(cubeCorner[4]);
-    glNormal3fv(cubeCorner[0]);
     glVertex3fv(cubeCorner[0]);
 
-    glNormal3fv(cubeCorner[3]);
+    glNormal3f(0, 1, 0);
+    glColor3f(0.0, 1.0, 1.0);   // cyan
     glVertex3fv(cubeCorner[3]);
-    glNormal3fv(cubeCorner[7]);
     glVertex3fv(cubeCorner[7]);
-    glNormal3fv(cubeCorner[6]);
     glVertex3fv(cubeCorner[6]);
-    glNormal3fv(cubeCorner[2]);
     glVertex3fv(cubeCorner[2]);
 
-    glNormal3fv(cubeCorner[4]);
+    glNormal3f(0.0, 0.0, 1.0);
+    glColor3f(1.0f, 0.0f, 0.0f);   // red
     glVertex3fv(cubeCorner[4]);
-    glNormal3fv(cubeCorner[5]);
     glVertex3fv(cubeCorner[5]);
-    glNormal3fv(cubeCorner[6]);
     glVertex3fv(cubeCorner[6]);
-    glNormal3fv(cubeCorner[7]);
     glVertex3fv(cubeCorner[7]);
 
-    glNormal3fv(cubeCorner[4]);
+    glNormal3f(-1, 0, 0);
+    glColor3f(1.0, 0.0, 1.0);   // magenta
     glVertex3fv(cubeCorner[4]);
-    glNormal3fv(cubeCorner[7]);
     glVertex3fv(cubeCorner[7]);
-    glNormal3fv(cubeCorner[3]);
     glVertex3fv(cubeCorner[3]);
-    glNormal3fv(cubeCorner[0]);
     glVertex3fv(cubeCorner[0]);
 
-    glNormal3fv(cubeCorner[2]);
+    glNormal3f(1, 0, 0);
+    glColor3f(0.0, 1.0, 0.0);   // green
     glVertex3fv(cubeCorner[2]);
-    glNormal3fv(cubeCorner[6]);
     glVertex3fv(cubeCorner[6]);
-    glNormal3fv(cubeCorner[5]);
     glVertex3fv(cubeCorner[5]);
-    glNormal3fv(cubeCorner[1]);
     glVertex3fv(cubeCorner[1]);
   glEnd();
 
   glFlush();
+
+  glDisable(GL_LIGHTING);
 }
+
+
+void RenderWidget::drawRGBCube(void)
+{
+  GLfloat cubeCorner[8][3];
+  GLfloat cubeCornerColor[8][3];
+
+  cubeCorner[0][0] = -0.5;  cubeCorner[0][1] = -0.5;  cubeCorner[0][2] = -0.5;
+  cubeCorner[1][0] = 0.5;   cubeCorner[1][1] = -0.5;  cubeCorner[1][2] = -0.5;
+  cubeCorner[2][0] = 0.5;   cubeCorner[2][1] = 0.5;   cubeCorner[2][2] = -0.5;
+  cubeCorner[3][0] = -0.5;  cubeCorner[3][1] = 0.5;   cubeCorner[3][2] = -0.5;
+  cubeCorner[4][0] = -0.5;  cubeCorner[4][1] = -0.5;  cubeCorner[4][2] = 0.5;
+  cubeCorner[5][0] = 0.5;   cubeCorner[5][1] = -0.5;  cubeCorner[5][2] = 0.5;
+  cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
+  cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
+
+  cubeCornerColor[0][0] = 0.0;  cubeCornerColor[0][1] = 0.0;  cubeCornerColor[0][2] = 0.0;  //black
+  cubeCornerColor[1][0] = 0.0;  cubeCornerColor[1][1] = 1.0;  cubeCornerColor[1][2] = 0.0;  //green
+  cubeCornerColor[2][0] = 0.0;  cubeCornerColor[2][1] = 1.0;  cubeCornerColor[2][2] = 1.0;  //cyan
+  cubeCornerColor[3][0] = 0.0;  cubeCornerColor[3][1] = 0.0;  cubeCornerColor[3][2] = 1.0;  //blue
+  cubeCornerColor[4][0] = 1.0;  cubeCornerColor[4][1] = 0.0;  cubeCornerColor[4][2] = 0.0;  //red
+  cubeCornerColor[5][0] = 1.0;  cubeCornerColor[5][1] = 1.0;  cubeCornerColor[5][2] = 0.0;  //yellow
+  cubeCornerColor[6][0] = 1.0;  cubeCornerColor[6][1] = 1.0;  cubeCornerColor[6][2] = 1.0;  //white
+  cubeCornerColor[7][0] = 1.0;  cubeCornerColor[7][1] = 0.0;  cubeCornerColor[7][2] = 1.0;  //magenta
+
+  glLineWidth(3);
+  glBegin(GL_LINES);
+    glColor3f(0.0, 0.0, 0.0);
+    glVertex3fv(cubeCorner[0]);
+    glVertex3f(-0.5, -0.5, 1.0);
+
+    glVertex3fv(cubeCorner[0]);
+    glVertex3f(-0.5, 1.0, -0.5);
+
+    glVertex3fv(cubeCorner[0]);
+    glVertex3f(1.0, -0.5, -0.5);
+  glEnd();
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  glLineWidth(3);
+  glBegin(GL_QUADS);
+
+  glColor3fv(cubeCornerColor[3]);
+  glVertex3fv(cubeCorner[3]);
+  glColor3fv(cubeCornerColor[2]);
+  glVertex3fv(cubeCorner[2]);
+  glColor3fv(cubeCornerColor[1]);
+  glVertex3fv(cubeCorner[1]);
+  glColor3fv(cubeCornerColor[0]);
+  glVertex3fv(cubeCorner[0]);
+
+  glColor3fv(cubeCornerColor[1]);
+  glVertex3fv(cubeCorner[1]);
+  glColor3fv(cubeCornerColor[5]);
+  glVertex3fv(cubeCorner[5]);
+  glColor3fv(cubeCornerColor[4]);
+  glVertex3fv(cubeCorner[4]);
+  glColor3fv(cubeCornerColor[0]);
+  glVertex3fv(cubeCorner[0]);
+
+  glColor3fv(cubeCornerColor[3]);
+  glVertex3fv(cubeCorner[3]);
+  glColor3fv(cubeCornerColor[7]);
+  glVertex3fv(cubeCorner[7]);
+  glColor3fv(cubeCornerColor[6]);
+  glVertex3fv(cubeCorner[6]);
+  glColor3fv(cubeCornerColor[2]);
+  glVertex3fv(cubeCorner[2]);
+
+  glColor3fv(cubeCornerColor[4]);
+  glVertex3fv(cubeCorner[4]);
+  glColor3fv(cubeCornerColor[5]);
+  glVertex3fv(cubeCorner[5]);
+  glColor3fv(cubeCornerColor[6]);
+  glVertex3fv(cubeCorner[6]);
+  glColor3fv(cubeCornerColor[7]);
+  glVertex3fv(cubeCorner[7]);
+
+  glColor3fv(cubeCornerColor[4]);
+  glVertex3fv(cubeCorner[4]);
+  glColor3fv(cubeCornerColor[7]);
+  glVertex3fv(cubeCorner[7]);
+  glColor3fv(cubeCornerColor[3]);
+  glVertex3fv(cubeCorner[3]);
+  glColor3fv(cubeCornerColor[0]);
+  glVertex3fv(cubeCorner[0]);
+
+  glColor3fv(cubeCornerColor[2]);
+  glVertex3fv(cubeCorner[2]);
+  glColor3fv(cubeCornerColor[6]);
+  glVertex3fv(cubeCorner[6]);
+  glColor3fv(cubeCornerColor[5]);
+  glVertex3fv(cubeCorner[5]);
+  glColor3fv(cubeCornerColor[1]);
+  glVertex3fv(cubeCorner[1]);
+  glEnd();
+
+  glFlush();
+}
+
 
 void RenderWidget::renderMesh(MeshModel* mshModel)
 {

@@ -32,6 +32,8 @@ class RenderWidget : public QOpenGLWidget
     void zoomOut();
     void rotateAboutX(double angle);
     void rotateAboutY(double angle);
+    void changeProjection(int prjtype);
+    void changeRenderingMode(int renderingMode);
 
   protected:
     void initializeGL() override;
@@ -43,8 +45,9 @@ class RenderWidget : public QOpenGLWidget
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent * event);
 
-    void drawCube(void);
+    void drawCube(int rMode);
     void drawCubeWithLighting(void);
+    void drawRGBCube(void);
     void renderMesh(MeshModel* mshModel);
 
     typedef struct
@@ -71,4 +74,18 @@ class RenderWidget : public QOpenGLWidget
 
     bool IS_LeftButton, IS_MiddleButton, IS_RightButton;
 
+    enum ProjectionType {
+      Perspective,
+      Ortho
+    };
+
+    ProjectionType m_ProjectionType;
+
+    enum RendeingMode {
+      Filling,
+      WireFrame,
+      Lighting
+    };
+
+    RendeingMode m_RendeingMode;
 };
