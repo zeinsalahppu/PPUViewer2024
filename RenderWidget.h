@@ -34,6 +34,7 @@ class RenderWidget : public QOpenGLWidget
     void rotateAboutY(double angle);
     void changeProjection(int prjtype);
     void changeRenderingMode(int renderingMode);
+    void changeLightPositionStatus(int lightPositionStatus);
 
   protected:
     void initializeGL() override;
@@ -88,4 +89,7 @@ class RenderWidget : public QOpenGLWidget
     };
 
     RendeingMode m_RendeingMode;
+
+    bool m_IsFixedLightPosition;
 };
+

@@ -86,4 +86,8 @@ PPUViewer::PPUViewer()
   comboLayout->addWidget(selectionLabel2, 1, 0, 1, 4);
   comboLayout->addWidget(renderingModeComboBox, 1, 1, 1, 4);
 
+  m_FixedLightPositionCB = new QCheckBox("Fixel Light Position", this);
+  vLayout->addWidget(m_FixedLightPositionCB);
+  m_FixedLightPositionCB->setCheckState(Qt::Checked);
+  connect(m_FixedLightPositionCB, SIGNAL(stateChanged(int)), m_RenderWidget, SLOT(changeLightPositionStatus(int)));
 }

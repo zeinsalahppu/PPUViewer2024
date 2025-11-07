@@ -55,6 +55,7 @@ QSize RenderWidget::sizeHint() const
 void RenderWidget::initializeGL()
 {
   glClearColor(1.0, 1.0, 1.0, 0.0);
+  m_IsFixedLightPosition = true;
 }
 
 
@@ -195,6 +196,18 @@ void RenderWidget::changeRenderingMode(int rMode)
 }
 
 
+void RenderWidget::changeLightPositionStatus(int lightPositionStatus)
+{
+
+  if (lightPositionStatus  == 2)
+    m_IsFixedLightPosition = true;
+  else
+    m_IsFixedLightPosition = false;
+
+  update();
+}
+
+
 void RenderWidget::drawCube(int rMode)
 {
   GLfloat cubeCorner[8][3];
@@ -267,9 +280,23 @@ void RenderWidget::drawCubeWithLighting(void)
   cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
   cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
 
- // GLfloat light_position[] = { m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z, 1.0 };
+  GLfloat light_position[4];
+
+  if (!m_IsFixedLightPosition)
+  {
+    light_position[0] = m_ViewPoint.x;
+    light_position[1] = m_ViewPoint.y;
+    light_position[2] = m_ViewPoint.z;
+    light_position[3] = 1.0;
+  }
+  else
+  {
+    light_position[0] = 2.0;
+    light_position[1] = 2.0;
+    light_position[2] = 2.0;
+    light_position[3] = 1.0;
+  };
   
-  GLfloat light_position[] = { 2.0, 2.0, 2.0, 1.0 };
   GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
