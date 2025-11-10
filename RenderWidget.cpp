@@ -105,6 +105,8 @@ void RenderWidget::zoomIn()
   m_ViewPoint.y *= 0.95;
   m_ViewPoint.z *= 0.95;
 
+  //std::cout << m_ViewPoint.x << ", " << m_ViewPoint.y << ", " << m_ViewPoint.z << std::endl;
+
   update();
 }
 
@@ -116,6 +118,8 @@ void RenderWidget::zoomOut()
   m_ViewPoint.x /= 0.95;
   m_ViewPoint.y /= 0.95;
   m_ViewPoint.z /= 0.95;
+
+  //std::cout << m_ViewPoint.x << ", " << m_ViewPoint.y << ", " << m_ViewPoint.z << std::endl;
 
   update();
 }
@@ -284,9 +288,9 @@ void RenderWidget::drawCubeWithLighting(void)
 
   if (!m_IsFixedLightPosition)
   {
-    light_position[0] = m_ViewPoint.x;
-    light_position[1] = m_ViewPoint.y;
-    light_position[2] = m_ViewPoint.z;
+    light_position[0] = static_cast<GLfloat>(m_ViewPoint.x);
+    light_position[1] = static_cast<GLfloat>(m_ViewPoint.y);
+    light_position[2] = static_cast<GLfloat>(m_ViewPoint.z);
     light_position[3] = 1.0;
   }
   else
@@ -297,6 +301,8 @@ void RenderWidget::drawCubeWithLighting(void)
     light_position[3] = 1.0;
   };
   
+  std::cout << "Light position: " << light_position[0] << ", " << light_position[1] << ", " << light_position[2] << ", " << light_position[3] << std::endl;
+
   GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
   GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
