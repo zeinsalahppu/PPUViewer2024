@@ -54,11 +54,11 @@ void RenderWidget::paintGL()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  drawHouse(1, 1, 0);
+  drawHouse(1, 1, 0); // yellow
 
   glPushMatrix();
   glTranslatef(60.0, 30.0, 0.0);
-  drawHouse(1, 0, 1);
+  drawHouse(1, 0, 1); // magenta
   glPopMatrix();
 
   glPushMatrix();
@@ -66,13 +66,8 @@ void RenderWidget::paintGL()
   drawHouse(1, 0, 0);
   glPopMatrix();
 
-
-
-  // ******************************************************************************
-
-  //glRotatef(30.0, 0.0, 0.0, 1.0);
-  //drawHouse(0, 1, 0);
-
+  glRotatef(30.0, 0.0, 0.0, 1.0);
+  drawHouse(0, 1, 0);
 
   //glTranslatef(75.0, 75.0, 0.0);
   //glRotatef(30.0, 0.0, 0.0, 1.0);
@@ -87,20 +82,20 @@ void RenderWidget::drawHouse(float r, float g, float b)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glBegin(GL_POLYGON);
-      glColor3f(r, g, b); // yellow
-      glVertex2i(50, 50);
-      glVertex2i(100, 50);
-      glVertex2i(100, 80);
-      glVertex2i(75, 100);
-      glVertex2i(50, 80);
+      glColor3f(r, g, b);
+      glVertex2i(0, 0);
+      glVertex2i(50, 0);
+      glVertex2i(50, 30);
+      glVertex2i(25, 50);
+      glVertex2i(0, 30);
 	glEnd();
 
 	glBegin(GL_QUADS);
       glColor3f(0, 0, 0); 
-      glVertex2i(70, 52);
-      glVertex2i(80, 52);
-      glVertex2i(80, 75);
-      glVertex2i(70, 75);
+      glVertex2i(20, 2);
+      glVertex2i(30, 2);
+      glVertex2i(30, 25);
+      glVertex2i(20, 25);
 	glEnd();
 	
 }
