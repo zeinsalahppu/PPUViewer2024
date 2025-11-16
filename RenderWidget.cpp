@@ -50,50 +50,8 @@ void RenderWidget::initializeGL()
 void RenderWidget::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glEnable(GL_DEPTH_TEST);
+//  glEnable(GL_DEPTH_TEST);
 
-  ////******************************************************************************
-  //glPointSize(10.0);
-  //glBegin(GL_POINTS);
-  //  glColor3f(1, 0, 0);
-  //  glVertex2i(80, 15);
-  //  glColor3f(0, 0, 1);
-  //  glVertex2i(10, 145);
-  //glEnd();
-
-  //glColor3f(0.0, 0.9, 0.2);
-  //glBegin(GL_LINES);
-  //  glVertex2i(80, 15);
-  //  glVertex2i(10, 145);
-  //glEnd();
-
-
-  ////******************************************************************************
-  //glLineWidth(3);
-  //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  //glBegin(GL_TRIANGLES);
-  //  glColor3f(1, 0, 0);
-  //  glVertex2i(100, 50);
-  //  glColor3f(0, 1, 0);
-  //  glVertex2i(150, 45);
-  //  glColor3f(0, 0, 1);
-  //  glVertex2i(130, 120);
-  //glEnd();
-
-  //glEnable(GL_DEPTH_TEST);
-
-
-  ////***************************************************************************
-  //glBegin(GL_LINE_STRIP);
-  //    glColor3f(1, 0, 0);
-  //    glVertex2i(40, 60);
-  //    glVertex2i(45, 120);
-  //    glVertex2i(70, 130);
-  //    glVertex2i(60, 70);
-  //    glVertex2i(100, 100);
-  //    glVertex2i(85, 50);
-  //    glVertex2i(120, 80);
-  //  glEnd();
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
@@ -101,34 +59,34 @@ void RenderWidget::paintGL()
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glBegin(GL_QUADS);
     glColor3f(1, 1, 0); // yellow
-    glVertex2i(40, 60);
-    glVertex2i(40, 80);
-    glVertex2i(90, 80);
     glVertex2i(90, 60);
+    glVertex2i(90, 80);
+    glVertex2i(40, 80);
+    glVertex2i(40, 60);
   glEnd();
 
-  //glPushMatrix();
-  //glTranslatef(50.0, 0.0, 0.0);
-  //glBegin(GL_QUADS);
-  //  glColor3f(1, 0, 1);
-  //  glVertex2i(40, 60);
-  //  glVertex2i(40, 80);
-  //  glVertex2i(90, 80);
-  //  glVertex2i(90, 60);
-  //glEnd();
-  //glPopMatrix();
+  glPushMatrix();
+  glTranslatef(50.0, 0.0, 0.0);
+  glBegin(GL_QUADS);
+    glColor3f(1, 0, 1);
+    glVertex2i(90, 60);
+    glVertex2i(90, 80);
+    glVertex2i(40, 80);
+    glVertex2i(40, 60);
+  glEnd();
+  glPopMatrix();
 
-  //glPushMatrix();
-  //glMatrixMode(GL_MODELVIEW);
-  //glTranslatef(50.0, 20.0, 0.0);
-  //glBegin(GL_QUADS);
-  //  glColor3f(1, 0, 0);
-  //  glVertex2i(40, 60);
-  //  glVertex2i(40, 80);
-  //  glVertex2i(90, 80);
-  //  glVertex2i(90, 60);
-  //glEnd();
-  //glPopMatrix();
+  glPushMatrix();
+  glMatrixMode(GL_MODELVIEW);
+  glTranslatef(50.0, 20.0, 0.0);
+  glBegin(GL_QUADS);
+    glColor3f(1, 0, 0);
+    glVertex2i(90, 60);
+    glVertex2i(90, 80);
+    glVertex2i(40, 80);
+    glVertex2i(40, 60);
+  glEnd();
+  glPopMatrix();
 
 
   ////******************************************************************************
@@ -148,10 +106,10 @@ void RenderWidget::paintGL()
   glTranslatef(-65.0, -70.0, 0.0);
   glBegin(GL_QUADS);
   glColor3f(0, 1, 0); // green
-    glVertex2i(40, 60);
-    glVertex2i(40, 80);
-    glVertex2i(90, 80);
     glVertex2i(90, 60);
+    glVertex2i(90, 80);
+    glVertex2i(40, 80);
+    glVertex2i(40, 60);
   glEnd();
 
 }
