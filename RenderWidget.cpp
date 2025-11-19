@@ -43,7 +43,7 @@ void RenderWidget::initializeGL()
   glClearColor(1.0, 1.0, 1.0, 0.0);
 
   glMatrixMode(GL_PROJECTION);
-  gluOrtho2D(0.0, 600.0, 0.0, 600.0);
+  gluOrtho2D(-300.0, 300.0, -300.0, 300.0);
   // glOrtho(-2.0, 2.0, -2.0, 2.0, -100, 100);
 
 }
@@ -56,13 +56,12 @@ void RenderWidget::paintGL()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-
   glBegin(GL_LINES);
  //   glColor3f(r, g, b);
+    glVertex2i(0, -300);
     glVertex2i(0, 300);
-    glVertex2i(600, 300);
+    glVertex2i(-300, 0);
     glVertex2i(300, 0);
-    glVertex2i(300, 600);
   glEnd();
 
   #define PI 3.14159 
@@ -70,19 +69,19 @@ void RenderWidget::paintGL()
   float dt = 2 * PI / 12;
   float r = 200;
 
-  for (float t = 0; t < PI; t += dt)
+  for (float t = 0; t < 2*PI; t += dt)
   {
-    float x = 300 + r*cos(t);
-    float y = 300 + r*sin(t);
+    float x = 0 + r*cos(t);
+    float y = 0 + r*sin(t);
     std::cout << t << ":" << x << ", " << y << std::endl;
    
     glPushMatrix();
     glTranslatef(x, y, 0.0);
 //    glTranslatef(75.0, 75.0, 0.0);
     glRotatef(t*180/PI- 90, 0.0, 0.0, 1.0);
-//    glTranslatef(-75.0, -75.0, 0.0);
+    glTranslatef(-25.0, -25.0, 0.0);
 
-    drawHouse(t/6, 0, 0);
+    drawHouse(1, 0, 0);
     glPopMatrix();
   }
 
