@@ -28,7 +28,7 @@ RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 
   m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
   m_ProjectionType = Perspective;
-  m_RendeingMode = WireFrame;
+  m_RendeingMode = Filling;
 
   //m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
@@ -64,27 +64,78 @@ void RenderWidget::paintGL()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
 
+  // Viewport Mapping
+  int width = this->width();
+  int height = this->height();
+  int side = qMin(width, height);
+  glViewport((width - side) / 2, (height - side) / 2, side, side);
+  //  glViewport(0, 0, width, height);
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  if (m_ProjectionType == Perspective)
-    gluPerspective(25.0, 1.0, 0.1, 5000.0);
-  else
-    glOrtho(-1.3, 1.3, -1.3, 1.3, -2.0, 10000.0);
+  //glPushMatrix();
+  ////glTranslatef(10.0, 50.0, 0.0);  // #1
+  //glRotatef(45.0, 0.0, 0.0, 1.0);  // #2
+  //printModelViewMatrix();
+  //glPopMatrix();
 
+  // Projection Transform
+  if (m_ProjectionType == Perspective)
+    //gluPerspective(25.0, 1.0, 0.1, 5000.0);  // #6
+    glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10.0);  // #5
+  else
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -2.0, 1000.0); // #4
+
+  // Viewing Transform
   gluLookAt(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z,      /* view point */
-    0.0, 0.0, 0.0,      /* ref point */
-    m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
+            0.0, 0.0, 0.0,      /* ref point */
+            m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
+
+  //printModelViewMatrix();  // #3
+
 
   if (m_RendeingMode == WireFrame)
-    drawCube(GL_LINE);
+    drawCubeWireFrame();
   if (m_RendeingMode == Filling)
-    drawCube(GL_FILL);
+    drawCubeFilled();
   else if (m_RendeingMode == Lighting)
     drawCubeWithLighting();
 
   //drawRGBCube();
   //renderMesh(&m_Mesh);
+}
+
+
+void RenderWidget::printModelViewMatrix()
+{
+  GLfloat matrix[16];
+  glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+
+  std::cout << "ModelView Matrix:" << std::endl;
+
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int j = 0; j < 4; ++j)
+      std::cout << std::fixed << matrix[j * 4 + i] << "\t";
+    std::cout << std::endl;
+  }
+}
+
+
+void RenderWidget::printProjectionMatrix()
+{
+  GLfloat matrix[16];
+  glGetFloatv(GL_PROJECTION_MATRIX, matrix);
+
+  std::cout << "Projection Matrix:" << std::endl;
+
+  for (int i = 0; i < 4; ++i)
+  {
+    for (int j = 0; j < 4; ++j)
+      std::cout << std::fixed << matrix[j * 4 + i] << "\t";
+    std::cout << std::endl;
+  }
 }
 
 
@@ -212,7 +263,7 @@ void RenderWidget::changeLightPositionStatus(int lightPositionStatus)
 }
 
 
-void RenderWidget::drawCube(int rMode)
+void RenderWidget::drawCubeWireFrame(void)
 {
   GLfloat cubeCorner[8][3];
 
@@ -225,7 +276,65 @@ void RenderWidget::drawCube(int rMode)
   cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
   cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
 
-  glPolygonMode(GL_FRONT_AND_BACK, rMode);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+  glLineWidth(3);
+  glBegin(GL_QUADS);
+
+  glColor3f(0.0, 0.0, 0.0);   // blue
+  glVertex3fv(cubeCorner[3]);
+  glVertex3fv(cubeCorner[2]);
+  glVertex3fv(cubeCorner[1]);
+  glVertex3fv(cubeCorner[0]);
+
+  //glColor3f(1.0, 1.0, 0.0);  // yellow
+  glVertex3fv(cubeCorner[1]);
+  glVertex3fv(cubeCorner[5]);
+  glVertex3fv(cubeCorner[4]);
+  glVertex3fv(cubeCorner[0]);
+
+  //glColor3f(0.0, 1.0, 1.0);  // cyan
+  glVertex3fv(cubeCorner[3]);
+  glVertex3fv(cubeCorner[7]);
+  glVertex3fv(cubeCorner[6]);
+  glVertex3fv(cubeCorner[2]);
+
+  //glColor3f(1.0, 0.0, 0.0);   // red
+  glVertex3fv(cubeCorner[4]);
+  glVertex3fv(cubeCorner[5]);
+  glVertex3fv(cubeCorner[6]);
+  glVertex3fv(cubeCorner[7]);
+
+  //glColor3f(1.0, 0.0, 1.0);   //magenta
+  glVertex3fv(cubeCorner[4]);
+  glVertex3fv(cubeCorner[7]);
+  glVertex3fv(cubeCorner[3]);
+  glVertex3fv(cubeCorner[0]);
+
+  //glColor3f(0.0, 1.0, 0.0);   // green
+  glVertex3fv(cubeCorner[2]);
+  glVertex3fv(cubeCorner[6]);
+  glVertex3fv(cubeCorner[5]);
+  glVertex3fv(cubeCorner[1]);
+  glEnd();
+
+  glFlush();
+}
+
+
+void RenderWidget::drawCubeFilled(void)
+{
+  GLfloat cubeCorner[8][3];
+
+  cubeCorner[0][0] = -0.5;  cubeCorner[0][1] = -0.5;  cubeCorner[0][2] = -0.5;
+  cubeCorner[1][0] = 0.5;   cubeCorner[1][1] = -0.5;  cubeCorner[1][2] = -0.5;
+  cubeCorner[2][0] = 0.5;   cubeCorner[2][1] = 0.5;   cubeCorner[2][2] = -0.5;
+  cubeCorner[3][0] = -0.5;  cubeCorner[3][1] = 0.5;   cubeCorner[3][2] = -0.5;
+  cubeCorner[4][0] = -0.5;  cubeCorner[4][1] = -0.5;  cubeCorner[4][2] = 0.5;
+  cubeCorner[5][0] = 0.5;   cubeCorner[5][1] = -0.5;  cubeCorner[5][2] = 0.5;
+  cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
+  cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
+
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   glLineWidth(3);
   glBegin(GL_QUADS);
 
@@ -268,7 +377,6 @@ void RenderWidget::drawCube(int rMode)
 
   glFlush();
 }
-
 
 
 void RenderWidget::drawCubeWithLighting(void)
