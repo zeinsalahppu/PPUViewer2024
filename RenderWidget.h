@@ -46,10 +46,14 @@ class RenderWidget : public QOpenGLWidget
     void mouseMoveEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent * event);
 
-    void drawCube(int rMode);
+    void drawCubeWireFrame(void);
+    void drawCubeFilled(void);
     void drawCubeWithLighting(void);
     void drawRGBCube(void);
     void renderMesh(MeshModel* mshModel);
+
+    void printModelViewMatrix();
+    void printProjectionMatrix();
 
     typedef struct
     {
