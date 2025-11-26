@@ -82,6 +82,7 @@ void RenderWidget::paintGL()
 
   // Projection Transform
   if (m_ProjectionType == Perspective)
+    //gluPerspective(15.0, 1.0, 0.1, 5000.0);  // #7
     //gluPerspective(25.0, 1.0, 0.1, 5000.0);  // #6
     glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10.0);  // #5
   else
