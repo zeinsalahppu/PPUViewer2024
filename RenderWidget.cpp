@@ -74,6 +74,20 @@ void RenderWidget::paintGL()
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
+
+  GLfloat light_position[4];
+  if (!m_IsFixedLightPosition)
+  {
+    light_position[0] = static_cast<GLfloat>(m_ViewPoint.x);
+    light_position[1] = static_cast<GLfloat>(m_ViewPoint.y);
+    light_position[2] = static_cast<GLfloat>(m_ViewPoint.z);
+    light_position[3] = 1.0;
+    std::cout << "Light position: " << light_position[0] << ", " << light_position[1] << ", " << light_position[2] << ", " << light_position[3] << std::endl;
+
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  }
+
+
   //glPushMatrix();
   ////glTranslatef(10.0, 50.0, 0.0); // #1
   //glRotatef(45.0, 0.0, 0.0, 1.0);  // #2
@@ -81,12 +95,16 @@ void RenderWidget::paintGL()
   //glPopMatrix();
 
   // Projection Transform
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
   if (m_ProjectionType == Perspective)
     gluPerspective(25.0, 1.0, 0.1, 5000.0);
   else
     glOrtho(-1.0, 1.0, -1.0, 1.0, -2.0, 1000.0);
 
   // Viewing Transform
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
   gluLookAt(m_ViewPoint.x, m_ViewPoint.y, m_ViewPoint.z,      /* view point */
             0.0, 0.0, 0.0,      /* ref point */
             m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
@@ -392,29 +410,22 @@ void RenderWidget::drawCubeWithLighting(void)
   cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
 
   GLfloat light_position[4];
-
-  if (!m_IsFixedLightPosition)
-  {
-    light_position[0] = static_cast<GLfloat>(m_ViewPoint.x);
-    light_position[1] = static_cast<GLfloat>(m_ViewPoint.y);
-    light_position[2] = static_cast<GLfloat>(m_ViewPoint.z);
-    light_position[3] = 1.0;
-  }
-  else
+  if (m_IsFixedLightPosition)
   {
     light_position[0] = 2.0;
     light_position[1] = 2.0;
     light_position[2] = 2.0;
     light_position[3] = 1.0;
-  };
-  
-  std::cout << "Light position: " << light_position[0] << ", " << light_position[1] << ", " << light_position[2] << ", " << light_position[3] << std::endl;
+    std::cout << "Light position: " << light_position[0] << ", " << light_position[1] << ", " << light_position[2] << ", " << light_position[3] << std::endl;
+
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  }
 
   GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat light_specular[] = { 0.0, 0.0, 0.0, 1.0 };
 
-  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+//  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
   glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);

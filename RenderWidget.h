@@ -94,6 +94,7 @@ class RenderWidget : public QOpenGLWidget
 
     RendeingMode m_RendeingMode;
 
+    GLfloat m_LightPosition[4];
     bool m_IsFixedLightPosition;
 };
 
