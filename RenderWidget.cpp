@@ -28,7 +28,7 @@ RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 
   m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
   m_ProjectionType = Perspective;
-  m_RendeingMode = WireFrame;
+  m_RendeingMode = Filling;
 
   //m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
@@ -98,9 +98,11 @@ void RenderWidget::paintGL()
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   if (m_ProjectionType == Perspective)
-    gluPerspective(25.0, 1.0, 0.1, 5000.0);
+    //gluPerspective(15.0, 1.0, 0.1, 5000.0);  // #7
+    //gluPerspective(25.0, 1.0, 0.1, 5000.0);  // #6
+    glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10.0);  // #5
   else
-    glOrtho(-1.0, 1.0, -1.0, 1.0, -2.0, 1000.0);
+    glOrtho(-1.0, 1.0, -1.0, 1.0, -2.0, 1000.0); // #4
 
   // Viewing Transform
   glMatrixMode(GL_MODELVIEW);
@@ -109,7 +111,7 @@ void RenderWidget::paintGL()
             0.0, 0.0, 0.0,      /* ref point */
             m_UpDirection.x(), m_UpDirection.y(), m_UpDirection.z());      /* up direction is positive y-axis */
 
-  //printModelViewMatrix(); // #3
+  //printModelViewMatrix();  // #3
 
 
   if (m_RendeingMode == WireFrame)
