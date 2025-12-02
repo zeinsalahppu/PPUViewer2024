@@ -90,12 +90,12 @@ PPUViewer::PPUViewer()
 
 
   QSpinBox *fovSpinBox = new QSpinBox(this);
-  fovSpinBox->setRange(5, 120);
+  fovSpinBox->setRange(2, 120);
   fovSpinBox->setValue(25);
 
 
   QSlider *fovSlider = new QSlider(Qt::Horizontal, this);
-  fovSlider->setRange(5, 120);
+  fovSlider->setRange(2, 120);
   fovSlider->setValue(25);
   fovSlider->setSingleStep(1);
   connect(fovSlider, SIGNAL(valueChanged(int)), m_RenderWidget, SLOT(setCameraFOV(int)));
