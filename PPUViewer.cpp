@@ -13,6 +13,7 @@
 #include <QGridLayout>
 #include <QComboBox>
 #include <QLabel>
+#include <QSpinBox>
 
 #include "PPUViewer.h"
 #include "RenderWidget.h"
@@ -65,7 +66,8 @@ PPUViewer::PPUViewer()
   QLabel *selectionLabel = new QLabel("Projection Mode:");
 
   QComboBox *projectionModeComboBox = new QComboBox();
-  projectionModeComboBox->addItem("Perspective");
+  projectionModeComboBox->addItem("Perspective - glFrustum");
+  projectionModeComboBox->addItem("Perspective - gluPerspective");
   projectionModeComboBox->addItem("Orthogonal");  
   connect(projectionModeComboBox, SIGNAL(currentIndexChanged(int)), m_RenderWidget, SLOT(changeProjection(int)));
   vLayout21->addWidget(projectionModeComboBox);
@@ -85,6 +87,29 @@ PPUViewer::PPUViewer()
 
   comboLayout->addWidget(selectionLabel2, 1, 0, 1, 4);
   comboLayout->addWidget(renderingModeComboBox, 1, 1, 1, 4);
+
+
+  QSpinBox *fovSpinBox = new QSpinBox(this);
+  fovSpinBox->setRange(5, 120);
+  fovSpinBox->setValue(25);
+
+
+  QSlider *fovSlider = new QSlider(Qt::Horizontal, this);
+  fovSlider->setRange(5, 120);
+  fovSlider->setValue(25);
+  fovSlider->setSingleStep(1);
+  connect(fovSlider, SIGNAL(valueChanged(int)), m_RenderWidget, SLOT(setCameraFOV(int)));
+  connect(fovSlider, SIGNAL(valueChanged(int)), fovSpinBox, SLOT(setValue(int)));
+  connect(fovSpinBox, SIGNAL(valueChanged(int)), fovSlider, SLOT(setValue(int)));
+
+  QLabel *fovLabel = new QLabel("FoV:");
+
+  QHBoxLayout *hLayout3 = new QHBoxLayout();
+  hLayout3->addWidget(fovLabel);
+  hLayout3->addWidget(fovSlider);
+  hLayout3->addWidget(fovSpinBox);
+
+  vLayout->addLayout(hLayout3);
 
   m_FixedLightPositionCB = new QCheckBox("Fixel Light Position", this);
   vLayout->addWidget(m_FixedLightPositionCB);

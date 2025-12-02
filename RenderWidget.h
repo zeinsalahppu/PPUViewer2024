@@ -35,6 +35,7 @@ class RenderWidget : public QOpenGLWidget
     void changeProjection(int prjtype);
     void changeRenderingMode(int renderingMode);
     void changeLightPositionStatus(int lightPositionStatus);
+    void setCameraFOV(int fov);
 
   protected:
     void initializeGL() override;
@@ -80,7 +81,8 @@ class RenderWidget : public QOpenGLWidget
     bool IS_LeftButton, IS_MiddleButton, IS_RightButton;
 
     enum ProjectionType {
-      Perspective,
+      Perspective1,
+      Perspective2,
       Ortho
     };
 
@@ -93,6 +95,8 @@ class RenderWidget : public QOpenGLWidget
     };
 
     RendeingMode m_RendeingMode;
+    
+    int m_CameraFOV;
 
     GLfloat m_LightPosition[4];
     bool m_IsFixedLightPosition;

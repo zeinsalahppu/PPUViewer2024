@@ -27,8 +27,10 @@ RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
   m_UpDirection = gris::Vector3D(0, 1, 0);
 
   m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
-  m_ProjectionType = Perspective;
+  m_ProjectionType = Perspective1;
   m_RendeingMode = Filling;
+
+  m_CameraFOV = 25;
 
   //m_Mesh.LoadMeshFile("d:/3d models/sax.3ds");
 }
@@ -89,7 +91,7 @@ void RenderWidget::paintGL()
 
 
   //glPushMatrix();
-  ////glTranslatef(10.0, 50.0, 0.0); // #1
+  //glTranslatef(10.0, 50.0, 0.0); // #1
   //glRotatef(45.0, 0.0, 0.0, 1.0);  // #2
   //printModelViewMatrix();
   //glPopMatrix();
@@ -97,10 +99,10 @@ void RenderWidget::paintGL()
   // Projection Transform
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  if (m_ProjectionType == Perspective)
-    //gluPerspective(15.0, 1.0, 0.1, 5000.0);  // #7
-    //gluPerspective(25.0, 1.0, 0.1, 5000.0);  // #6
+  if (m_ProjectionType == Perspective1)
     glFrustum(-1.0, 1.0, -1.0, 1.0, 3.0, 10.0);  // #5
+  else if (m_ProjectionType == Perspective2)
+    gluPerspective(m_CameraFOV, 1.0, 0.1, 5000.0);  // #6  effect of FOV
   else
     glOrtho(-1.0, 1.0, -1.0, 1.0, -2.0, 1000.0); // #4
 
@@ -246,10 +248,12 @@ void RenderWidget::changeProjection(int prjtype)
 {
   std::cout << "Projection mode changes to " << prjtype << "\n";
 
-  if (prjtype == 1)
+  if (prjtype == 0)
+    m_ProjectionType = Perspective1;
+  else if (prjtype == 1)
+    m_ProjectionType = Perspective2; 
+  else 
     m_ProjectionType = Ortho;
-  else
-    m_ProjectionType = Perspective;
 
   update();
 }
@@ -266,6 +270,15 @@ void RenderWidget::changeRenderingMode(int rMode)
   else 
     m_RendeingMode = Lighting;
 
+  update();
+}
+
+
+void RenderWidget::setCameraFOV(int fov)
+{
+  //std::cout << "FoV changes to " << fov << "\n";
+
+  m_CameraFOV = fov;
   update();
 }
 
@@ -297,6 +310,7 @@ void RenderWidget::drawCubeWireFrame(void)
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
   glLineWidth(3);
+
   glBegin(GL_QUADS);
 
   glColor3f(0.0, 0.0, 0.0);   // blue
