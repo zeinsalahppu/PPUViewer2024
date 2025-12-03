@@ -83,6 +83,7 @@ PPUViewer::PPUViewer()
   renderingModeComboBox->addItem("Flat Shading");
   renderingModeComboBox->addItem("Lighting");
   renderingModeComboBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+  renderingModeComboBox->setCurrentIndex(1);
   connect(renderingModeComboBox, SIGNAL(currentIndexChanged(int)), m_RenderWidget, SLOT(changeRenderingMode(int)));
 
   comboLayout->addWidget(selectionLabel2, 1, 0, 1, 4);

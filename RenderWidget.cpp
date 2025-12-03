@@ -439,7 +439,7 @@ void RenderWidget::drawCubeWithLighting(void)
 
   GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
   GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat light_specular[] = { 0.0, 0.0, 0.0, 1.0 };
+  GLfloat light_specular[] = { 0.7, 0.70, 0.70, 1.0 };
 
 //  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
