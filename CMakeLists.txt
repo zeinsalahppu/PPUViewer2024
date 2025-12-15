@@ -36,6 +36,7 @@ LINK_LIBRARIES(
    optimized  baselib/release/baselib
    ${OPENGL_glu_LIBRARY}
    ${OPENGL_LIBRARY}
+   opengl32.lib
 )
 
 SUBDIRS (baselib)

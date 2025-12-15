@@ -50,6 +50,7 @@ class RenderWidget : public QOpenGLWidget
     void drawCubeWireFrame(void);
     void drawCubeFilled(void);
     void drawCubeWithLighting(void);
+    void DrawTeapot(void);
     void drawRGBCube(void);
     void renderMesh(MeshModel* mshModel);
 
