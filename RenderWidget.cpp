@@ -19,9 +19,9 @@
 
 RenderWidget::RenderWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
-  m_ViewPoint.x = 50.0;
-  m_ViewPoint.y = 50.0;
-  m_ViewPoint.z = 50.0;
+  m_ViewPoint.x = 5.0;
+  m_ViewPoint.y = 5.0;
+  m_ViewPoint.z = 5.0;
 
   m_UpDirection = gris::Vector3D(0, 1, 0);
 
@@ -63,7 +63,7 @@ void RenderWidget::initializeGL()
 void RenderWidget::paintGL()
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_DEPTH_TEST); //                                #31
 
   // Viewport Mapping
   int width = this->width();
@@ -366,8 +366,12 @@ void RenderWidget::drawCubeFilled(void)
   cubeCorner[6][0] = 0.5;   cubeCorner[6][1] = 0.5;   cubeCorner[6][2] = 0.5;
   cubeCorner[7][0] = -0.5;  cubeCorner[7][1] = 0.5;   cubeCorner[7][2] = 0.5;
 
+  //glEnable(GL_CULL_FACE); //                             #32
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+  //glPolygonMode(GL_FRONT, GL_FILL);
+  //glPolygonMode(GL_BACK, GL_LINE); //                      #33
   glLineWidth(3);
+
   glBegin(GL_QUADS);
 
   glColor3f(0.0, 0.0, 1.0);   // blue
@@ -452,11 +456,11 @@ void RenderWidget::drawCubeWithLighting(void)
   glShadeModel(GL_SMOOTH);
 //  glLineWidth(3);
 
-  //  // brass                           // #2
-  //GLfloat mat_ambient[] = { 0.329412f, 0.223529f, 0.027451f, 1.0f };
-  //GLfloat mat_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
-  //GLfloat mat_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
-  //GLfloat mat_shininess[] = { 27.8974f };
+  // brass                           // #2
+  GLfloat mat_ambient[] = { 0.329412f, 0.223529f, 0.027451f, 1.0f };
+  GLfloat mat_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
+  GLfloat mat_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
+  GLfloat mat_shininess[] = { 27.8974f };
 
   //// gold                          // #3
   //GLfloat mat_ambient[] = { 0.24725f, 0.1995f, 0.0745f, 1.0f };
@@ -464,12 +468,12 @@ void RenderWidget::drawCubeWithLighting(void)
   //GLfloat mat_specular[] = { 0.628281f, 0.555802f, 0.366065f, 1.0f };
   //GLfloat mat_shininess[] = { 51.2 };
 
-  //glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-  //glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
-  //glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-  //glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+  glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
-  glEnable(GL_COLOR_MATERIAL);                          // #1
+  //glEnable(GL_COLOR_MATERIAL);                          // #1
   glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
   glBegin(GL_QUADS);
@@ -723,7 +727,7 @@ void RenderWidget::renderMesh(MeshModel* mshModel)
   GLfloat mat_ambient[] = { 0.329412f, 0.223529f, 0.027451f, 1.0f };
   GLfloat mat_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
   GLfloat mat_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
-  GLfloat mat_shininess[] = { 27.8974f };                           // #5
+  GLfloat mat_shininess[] = { 73.0f };                           // #5
 
   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
   glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
